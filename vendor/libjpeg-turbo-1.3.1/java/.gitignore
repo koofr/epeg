@@ -20,3 +20,4 @@
 *.o
 
 classnodist_noinst.stamp
+classnoinst.stamp
