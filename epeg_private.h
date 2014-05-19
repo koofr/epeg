@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <setjmp.h>
 #include <jpeglib.h>
+#include <transupp.h>
 
 #include "config.h"
 
@@ -60,6 +61,7 @@ struct _Epeg_Image {
         } mem;
         int                          x, y;
         int                          w, h;
+        Epeg_Transform               transform;
         char                        *comment;
         FILE                        *f;
         struct jpeg_compress_struct  jinfo;

@@ -39,6 +39,18 @@ extern "C" {
     }
     Epeg_Colorspace;
 
+    typedef enum _Epeg_Transform {
+        EPEG_TRANSFORM_NONE,       /* no transformation */
+        EPEG_TRANSFORM_FLIP_H,     /* horizontal flip */
+        EPEG_TRANSFORM_FLIP_V,     /* vertical flip */
+        EPEG_TRANSFORM_TRANSPOSE,  /* transpose across UL-to-LR axis */
+        EPEG_TRANSFORM_TRANSVERSE, /* transpose across UR-to-LL axis */
+        EPEG_TRANSFORM_ROT_90,     /* 90-degree clockwise rotation */
+        EPEG_TRANSFORM_ROT_180,    /* 180-degree rotation */
+        EPEG_TRANSFORM_ROT_270     /* 270-degree clockwise (or 90 ccw) */
+    }
+    Epeg_Transform;
+
     typedef struct _Epeg_Image          Epeg_Image;
     typedef struct _Epeg_Thumbnail_Info Epeg_Thumbnail_Info;
 
@@ -55,6 +67,7 @@ extern "C" {
     EAPI void          epeg_decode_size_set           (Epeg_Image *im, int w, int h);
     EAPI void          epeg_colorspace_get            (Epeg_Image *im, int *space);
     EAPI void          epeg_decode_colorspace_set     (Epeg_Image *im, Epeg_Colorspace colorspace);
+    EAPI void          epeg_transform_set             (Epeg_Image *im, Epeg_Transform transform);
     EAPI const void   *epeg_pixels_get                (Epeg_Image *im, int x, int y, int w, int h);
     EAPI void          epeg_pixels_free               (Epeg_Image *im, const void *data);
     EAPI const char   *epeg_comment_get               (Epeg_Image *im);

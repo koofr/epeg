@@ -8,6 +8,7 @@ static int           _epeg_scale               (Epeg_Image *im);
 static int           _epeg_decode_for_trim     (Epeg_Image *im);
 static int           _epeg_trim                (Epeg_Image *im);
 static int           _epeg_encode              (Epeg_Image *im);
+static int           _epeg_transform           (Epeg_Image *im);
 
 static void          _epeg_fatal_error_handler (j_common_ptr cinfo);
 
@@ -197,6 +198,22 @@ epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace) {
         return;
     }
     im->color_space = colorspace;
+}
+
+/**
+ * Set the transformation of the image.
+ * @param im A handle to an opened Epeg image.
+ * @param transform The transformation of the image.
+ *
+ * Sets the transformation of the JPEG image.
+ *
+ */
+EAPI void
+epeg_transform_set(Epeg_Image *im, Epeg_Transform transform) {
+    if (im->pixels) {
+        return;
+    }
+    im->out.transform = transform;
 }
 
 /**
@@ -797,6 +814,24 @@ epeg_trim(Epeg_Image *im) {
 }
 
 /**
+ * This saves the transformed image to its specified destination.
+ * @param im A handle to an opened Epeg image.
+ *
+ * This saves the image @p im to its destination specified by
+ * epeg_file_output_set() or epeg_memory_output_set(). The image will be
+ * transformed using specified transformation.
+ *
+ * retval 1 - error transform
+ */
+EAPI int
+epeg_transform(Epeg_Image *im) {
+    if (_epeg_transform(im) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+/**
  * Close an image handle.
  * @param im A handle to an opened Epeg image.
  *
@@ -1317,6 +1352,141 @@ _epeg_encode(Epeg_Image *im) {
     while (im->out.jinfo.next_scanline < im->out.h) {
         jpeg_write_scanlines(&(im->out.jinfo), &(im->lines[im->out.jinfo.next_scanline]), 1);
     }
+    jpeg_finish_compress(&(im->out.jinfo));
+
+done:
+    if ((im->in.f) || (im->in.mem.data != NULL)) {
+        jpeg_destroy_decompress(&(im->in.jinfo));
+    }
+    if ((im->in.f) && (im->in.file)) {
+        fclose(im->in.f);
+    }
+    if (dst_mgr) {
+        if (dst_mgr->buf) {
+            free(dst_mgr->buf);
+        }
+        free(dst_mgr);
+        im->out.jinfo.dest = NULL;
+    }
+    jpeg_destroy_compress(&(im->out.jinfo));
+    if ((im->out.f) && (im->out.file)) {
+        fclose(im->out.f);
+    }
+    im->in.f = NULL;
+    im->out.f = NULL;
+
+    return ok;
+}
+
+static int
+_epeg_transform(Epeg_Image *im) {
+    jvirt_barray_ptr * src_coef_arrays;
+    jvirt_barray_ptr * dst_coef_arrays;
+    JCOPY_OPTION copyoption;
+    jpeg_transform_info transformoption;
+
+    copyoption = JCOPYOPT_ALL;
+    transformoption.crop = FALSE;
+    transformoption.trim = FALSE;
+    transformoption.force_grayscale = FALSE;
+
+    switch(im->out.transform) {
+    case EPEG_TRANSFORM_NONE:
+        return 0;
+    case EPEG_TRANSFORM_FLIP_H:
+        transformoption.transform = JXFORM_FLIP_H;
+        break;
+    case EPEG_TRANSFORM_FLIP_V:
+        transformoption.transform = JXFORM_FLIP_V;
+        break;
+    case EPEG_TRANSFORM_TRANSPOSE:
+        transformoption.transform = JXFORM_TRANSPOSE;
+        break;
+    case EPEG_TRANSFORM_TRANSVERSE:
+        transformoption.transform = JXFORM_TRANSVERSE;
+        break;
+    case EPEG_TRANSFORM_ROT_90:
+        transformoption.transform = JXFORM_ROT_90;
+        break;
+    case EPEG_TRANSFORM_ROT_180:
+        transformoption.transform = JXFORM_ROT_180;
+        break;
+    case EPEG_TRANSFORM_ROT_270:
+        transformoption.transform = JXFORM_ROT_270;
+        break;
+    default:
+        return 1;
+    }
+
+    struct epeg_destination_mgr *dst_mgr = NULL;
+    int ok = 0;
+
+    if ((im->out.w < 1) || (im->out.h < 1)) {
+        return 1;
+    }
+    if (im->out.f) {
+        return 1;
+    }
+
+    if (im->out.file) {
+        im->out.f = fopen(im->out.file, "wb");
+        if (!im->out.f) {
+            im->error = 1;
+            return 1;
+        }
+    } else {
+        im->out.f = NULL;
+    }
+
+    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
+    im->jerr.pub.error_exit = _epeg_fatal_error_handler;
+#ifdef NOWARNINGS
+    im->jerr.pub.emit_message = _emit_message;
+    im->jerr.pub.output_message = _output_message;
+    im->jerr.pub.format_message = _format_message;
+#endif
+
+    if (setjmp(im->jerr.setjmp_buffer)) {
+        ok = 1;
+        im->error = 1;
+        goto done;
+    }
+
+    jpeg_create_compress(&(im->out.jinfo));
+    if (im->out.f) {
+        jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
+    } else {
+        *(im->out.mem.data) = NULL;
+        *(im->out.mem.size) = 0;
+        /* Setup RAM destination manager */
+        dst_mgr = calloc(1, sizeof(struct epeg_destination_mgr));
+        if (!dst_mgr) {
+            return 1;
+        }
+        dst_mgr->dst_mgr.init_destination = _jpeg_init_destination;
+        dst_mgr->dst_mgr.empty_output_buffer = _jpeg_empty_output_buffer;
+        dst_mgr->dst_mgr.term_destination = _jpeg_term_destination;
+        dst_mgr->im = im;
+        dst_mgr->buf = malloc(65536);
+        if (!dst_mgr->buf) {
+            ok = 1;
+            im->error = 1;
+            goto done;
+        }
+        im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
+    }
+
+    jcopy_markers_setup(&(im->out.jinfo), copyoption);
+    jtransform_request_workspace(&(im->in.jinfo), &transformoption);
+    src_coef_arrays = jpeg_read_coefficients(&(im->in.jinfo));
+    jpeg_copy_critical_parameters(&(im->in.jinfo), &(im->out.jinfo));
+    im->out.jinfo.write_JFIF_header = FALSE;  // for Exif format
+    dst_coef_arrays = jtransform_adjust_parameters(&(im->in.jinfo), &(im->out.jinfo),
+                     src_coef_arrays, &transformoption);
+    jpeg_write_coefficients(&(im->out.jinfo), dst_coef_arrays);
+    jcopy_markers_execute(&(im->in.jinfo), &(im->out.jinfo), copyoption);
+    jtransform_execute_transformation(&(im->in.jinfo), &(im->out.jinfo),
+                    src_coef_arrays, &transformoption);
     jpeg_finish_compress(&(im->out.jinfo));
 
 done:
