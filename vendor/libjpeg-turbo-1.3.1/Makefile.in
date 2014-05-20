@@ -308,7 +308,8 @@ man1dir = $(mandir)/man1
 NROFF = nroff
 MANS = $(dist_man1_MANS)
 DATA = $(dist_doc_DATA) $(dist_example_DATA)
-am__include_HEADERS_DIST = jerror.h jmorecfg.h jpeglib.h turbojpeg.h
+am__include_HEADERS_DIST = jerror.h jmorecfg.h jpeglib.h transupp.h \
+	turbojpeg.h
 HEADERS = $(include_HEADERS) $(nodist_include_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
@@ -502,7 +503,8 @@ lib_LTLIBRARIES = libjpeg.la $(am__append_1)
 libjpeg_la_LDFLAGS = -version-info \
 	${LIBTOOL_CURRENT}:${SO_MINOR_VERSION}:${SO_AGE} -no-undefined \
 	$(am__append_8)
-include_HEADERS = jerror.h jmorecfg.h jpeglib.h $(am__append_2)
+include_HEADERS = jerror.h jmorecfg.h jpeglib.h transupp.h \
+	$(am__append_2)
 @WITH_TURBOJPEG_TRUE@libturbojpeg_la_LDFLAGS = -version-info 0:0 \
 @WITH_TURBOJPEG_TRUE@	-no-undefined $(am__append_7)
 nodist_include_HEADERS = jconfig.h
