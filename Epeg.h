@@ -78,6 +78,7 @@ extern "C" {
     EAPI void          epeg_file_output_set           (Epeg_Image *im, const char *file);
     EAPI void          epeg_memory_output_set         (Epeg_Image *im, unsigned char **data, int *size);
     EAPI int           epeg_encode                    (Epeg_Image *im);
+    EAPI int           epeg_transform                 (Epeg_Image *im);
     EAPI int           epeg_trim                      (Epeg_Image *im);
     EAPI void          epeg_close                     (Epeg_Image *im);
 
