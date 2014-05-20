@@ -14,8 +14,6 @@
 #include <jpeglib.h>
 #include <transupp.h>
 
-#include "config.h"
-
 typedef struct _epeg_error_mgr *emptr;
 
 struct _epeg_error_mgr {
