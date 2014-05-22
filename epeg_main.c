@@ -1385,7 +1385,7 @@ _epeg_transform(Epeg_Image *im) {
     JCOPY_OPTION copyoption;
     jpeg_transform_info transformoption;
 
-    copyoption = JCOPYOPT_ALL;
+    copyoption = JCOPYOPT_NONE;
     transformoption.crop = FALSE;
     transformoption.trim = FALSE;
     transformoption.force_grayscale = FALSE;
