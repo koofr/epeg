@@ -1392,7 +1392,8 @@ _epeg_transform(Epeg_Image *im) {
 
     switch(im->out.transform) {
     case EPEG_TRANSFORM_NONE:
-        return 0;
+        transformoption.transform = JXFORM_NONE;
+        break;
     case EPEG_TRANSFORM_FLIP_H:
         transformoption.transform = JXFORM_FLIP_H;
         break;
