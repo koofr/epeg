@@ -8,9 +8,18 @@ desired.
 
 Forked from https://github.com/mattes/epeg
 
-## Install
+## Dependencies
+
+Linux (Ubuntu 12.04):
 
     sudo apt-get install build-essential cmake nasm
+
+Mac OS X:
+
+    brew install cmake nasm
+
+## Install
+
     git clone github.com/koofr/epeg
     cd epeg
     mkdir build
