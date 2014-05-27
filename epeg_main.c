@@ -1408,7 +1408,7 @@ _epeg_transform(Epeg_Image *im) {
 
     copyoption = JCOPYOPT_NONE;
     transformoption.crop = FALSE;
-    transformoption.trim = FALSE;
+    transformoption.trim = TRUE;
     transformoption.force_grayscale = FALSE;
 
     switch(im->out.transform) {
