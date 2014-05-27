@@ -1404,6 +1404,7 @@ _epeg_transform(Epeg_Image *im) {
     jvirt_barray_ptr * dst_coef_arrays;
     JCOPY_OPTION copyoption;
     jpeg_transform_info transformoption;
+    memset(&transformoption, 0, sizeof(jpeg_transform_info));
 
     copyoption = JCOPYOPT_NONE;
     transformoption.crop = FALSE;
