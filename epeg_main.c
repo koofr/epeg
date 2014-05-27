@@ -1500,7 +1500,7 @@ _epeg_transform(Epeg_Image *im) {
         im->out.jinfo.dest = (struct jpeg_destination_mgr *)dst_mgr;
     }
 
-    jcopy_markers_setup(&(im->out.jinfo), copyoption);
+    jcopy_markers_setup(&(im->in.jinfo), copyoption);
     jtransform_request_workspace(&(im->in.jinfo), &transformoption);
     src_coef_arrays = jpeg_read_coefficients(&(im->in.jinfo));
     jpeg_copy_critical_parameters(&(im->in.jinfo), &(im->out.jinfo));
