@@ -30,6 +30,7 @@ struct _Epeg_Image {
     char                            scaled : 1;
 
     int                             error;
+    char                            error_msg[JMSG_LENGTH_MAX];
 
     Epeg_Colorspace                 color_space;
 

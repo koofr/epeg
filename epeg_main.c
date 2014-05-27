@@ -832,6 +832,21 @@ epeg_transform(Epeg_Image *im) {
 }
 
 /**
+ * Get the last error message.
+ * @param im A handle to an opened Epeg image.
+ * @param buffer Char buffer for error message
+ *
+ * This copies the last error to the buffer parameter.
+ */
+EAPI void
+epeg_error(Epeg_Image *im, char *buffer) {
+    if (!im->error) {
+        return;
+    }
+    strcpy(buffer, im->error_msg);
+}
+
+/**
  * Close an image handle.
  * @param im A handle to an opened Epeg image.
  *
@@ -904,6 +919,7 @@ _epeg_open_header(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
+        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
 error:
         epeg_close(im);
         im = NULL;
@@ -1065,6 +1081,7 @@ _epeg_decode(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
+        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
         return 2;
     }
 
@@ -1188,6 +1205,7 @@ _epeg_decode_for_trim(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
+        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
         return 1;
     }
 
@@ -1282,6 +1300,8 @@ _epeg_encode(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
+        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
+
         ok = 1;
         im->error = 1;
         goto done;
@@ -1448,6 +1468,8 @@ _epeg_transform(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
+        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
+
         ok = 1;
         im->error = 1;
         goto done;

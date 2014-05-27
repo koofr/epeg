@@ -80,6 +80,7 @@ extern "C" {
     EAPI int           epeg_encode                    (Epeg_Image *im);
     EAPI int           epeg_transform                 (Epeg_Image *im);
     EAPI int           epeg_trim                      (Epeg_Image *im);
+    EAPI void          epeg_error                     (Epeg_Image *im, char* buffer);
     EAPI void          epeg_close                     (Epeg_Image *im);
 
 #ifdef __cplusplus
