@@ -919,7 +919,6 @@ _epeg_open_header(Epeg_Image *im) {
 #endif
 
     if (setjmp(im->jerr.setjmp_buffer)) {
-        im->jerr.pub.format_message((j_common_ptr)&(im->out.jinfo), im->error_msg);
 error:
         epeg_close(im);
         im = NULL;
