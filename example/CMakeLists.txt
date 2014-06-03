@@ -6,15 +6,16 @@ add_executable(rotatetest rotatetest.c)
 
 add_executable(scaletest scaletest.c)
 
-include_directories(${PROJECT_SOURCE_DIR}/..)
-include_directories(${PROJECT_SOURCE_DIR}/../lib/libjpeg/include)
+set(EPEG_DIST ${PROJECT_SOURCE_DIR}/../dist)
+
+include_directories(${EPEG_DIST}/include)
 
 IF(APPLE)
-  set(LIBJPEG_LIBRARY /usr/local/lib/libjpeg.dylib)
-  set(LIBEPEG_LIBRARY ${PROJECT_SOURCE_DIR}/../build/libepeg.dylib)
+  set(LIBJPEG_LIBRARY ${EPEG_DIST}/lib/libjpeg.dylib)
+  set(LIBEPEG_LIBRARY ${EPEG_DIST}/lib/libepeg.dylib)
 ELSE()
-  set(LIBJPEG_LIBRARY /usr/local/lib/libjpeg.so)
-  set(LIBEPEG_LIBRARY ${PROJECT_SOURCE_DIR}/../build/libepeg.so)
+  set(LIBJPEG_LIBRARY ${EPEG_DIST}/lib/libjpeg.so)
+  set(LIBEPEG_LIBRARY ${EPEG_DIST}/lib/libepeg.so)
 ENDIF(APPLE)
 
 target_link_libraries(rotatetest ${LIBJPEG_LIBRARY})

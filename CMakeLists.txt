@@ -4,13 +4,16 @@ cmake_minimum_required(VERSION 2.8)
 
 add_library(epeg SHARED epeg_main.c)
 
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/dist)
+file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
+
 IF(APPLE)
-  set(LIBJPEG_LIBRARY /usr/local/lib/libjpeg.dylib)
+  set(LIBJPEG_LIBRARY ${CMAKE_INSTALL_PREFIX}/lib/libjpeg.dylib)
 ELSE()
-  set(LIBJPEG_LIBRARY /usr/local/lib/libjpeg.so)
+  set(LIBJPEG_LIBRARY ${CMAKE_INSTALL_PREFIX}/lib/libjpeg.so)
 ENDIF(APPLE)
 
-include_directories(/usr/local/include)
+include_directories(${CMAKE_INSTALL_PREFIX}/include)
 target_link_libraries(epeg ${LIBJPEG_LIBRARY})
 
 IF(APPLE)
