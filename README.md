@@ -20,7 +20,7 @@ Mac OS X:
 
 ## Install
 
-    git clone github.com/koofr/epeg
+    git clone https://github.com/koofr/epeg.git
     cd epeg
     mkdir build
     cd build
