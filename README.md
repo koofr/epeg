@@ -32,3 +32,15 @@ cd build
 cmake ..
 sudo make install
 ```
+
+## Build in Docker
+
+```sh
+docker build -t epeg .
+docker run -d --name epeg-copy epeg sh -c 'sleep 9999999'
+mkdir out
+cd out
+docker cp epeg-copy:/epeg/dist/lib/libepeg.a libepeg_linux_amd64.a
+docker cp epeg-copy:/epeg/dist/lib/libjpeg.a libjpeg_linux_amd64.a
+docker cp epeg-copy:/epeg/dist/include/Epeg.h Epeg.h
+```
