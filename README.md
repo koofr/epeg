@@ -10,11 +10,7 @@ Forked from https://github.com/mattes/epeg
 
 ## Dependencies
 
-Linux (Ubuntu 12.04):
-
-```sh
-apt-get install -y build-essential cmake nasm
-```
+For Linux see `Dockerfile`.
 
 macOS:
 
