@@ -12,17 +12,23 @@ Forked from https://github.com/mattes/epeg
 
 Linux (Ubuntu 12.04):
 
-    sudo apt-get install build-essential cmake nasm
+```sh
+apt-get install -y build-essential cmake nasm
+```
 
-Mac OS X:
+macOS:
 
-    brew install cmake nasm
+```sh
+brew install cmake nasm
+```
 
 ## Install
 
-    git clone https://github.com/koofr/epeg.git
-    cd epeg
-    mkdir build
-    cd build
-    cmake ..
-    sudo make install
+```sh
+git clone https://github.com/koofr/epeg.git
+cd epeg
+mkdir build
+cd build
+cmake ..
+sudo make install
+```
