@@ -16,15 +16,10 @@ ENDIF(APPLE)
 include_directories(${CMAKE_INSTALL_PREFIX}/include)
 target_link_libraries(epeg ${LIBJPEG_LIBRARY})
 
-IF(APPLE)
-  set(LIBJPEG_CONFIGURE --host x86_64-apple-darwin NASM=/usr/local/bin/nasm)
-ENDIF(APPLE)
-
 include(ExternalProject)
 ExternalProject_Add(libjpeg
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/libjpeg-turbo-1.3.1
-    CONFIGURE_COMMAND ${PROJECT_SOURCE_DIR}/vendor/libjpeg-turbo-1.3.1/configure --prefix=${CMAKE_INSTALL_PREFIX} ${LIBJPEG_CONFIGURE}
-    BUILD_COMMAND ${MAKE})
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/libjpeg-turbo-2.0.4
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX})
 
 add_dependencies(epeg libjpeg)
 
