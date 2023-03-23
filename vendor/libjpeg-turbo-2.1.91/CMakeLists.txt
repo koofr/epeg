@@ -541,7 +541,8 @@ set(JPEG_SOURCES jcapimin.c jcapistd.c jccoefct.c jccolor.c jcdctmgr.c
   jddctmgr.c jddiffct.c jdhuff.c jdicc.c jdinput.c jdlhuff.c jdlossls.c
   jdmainct.c jdmarker.c jdmaster.c jdmerge.c jdphuff.c jdpostct.c jdsample.c
   jdtrans.c jerror.c jfdctflt.c jfdctfst.c jfdctint.c jidctflt.c jidctfst.c
-  jidctint.c jidctred.c jquant1.c jquant2.c jutils.c jmemmgr.c jmemnobs.c)
+  jidctint.c jidctred.c jquant1.c jquant2.c jutils.c jmemmgr.c jmemnobs.c
+  jpegtran.c cdjpeg.c rdswitch.c transupp.c)
 
 if(WITH_ARITH_ENC OR WITH_ARITH_DEC)
   set(JPEG_SOURCES ${JPEG_SOURCES} jaricom.c)
@@ -1726,7 +1727,7 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/jconfig.h
   ${CMAKE_CURRENT_SOURCE_DIR}/jerror.h ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/jpeglib.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/jpeglib.h ${CMAKE_CURRENT_SOURCE_DIR}/transupp.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 include(cmakescripts/BuildPackages.cmake)

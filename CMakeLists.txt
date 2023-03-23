@@ -1,6 +1,6 @@
-project(epeg)
+cmake_minimum_required(VERSION 3.9)
 
-cmake_minimum_required(VERSION 2.8)
+project(epeg)
 
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -17,8 +17,8 @@ target_link_libraries(epeg ${LIBJPEG_LIBRARY})
 
 include(ExternalProject)
 ExternalProject_Add(libjpeg
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/libjpeg-turbo-2.0.4
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_POSITION_INDEPENDENT_CODE=True)
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/libjpeg-turbo-2.1.91
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_POSITION_INDEPENDENT_CODE=True -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET})
 
 add_dependencies(epeg libjpeg)
 
